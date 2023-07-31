@@ -93,7 +93,6 @@ void move_ball(char direction)
 {
   short oldCol = currentPos[0];
   short oldRow = currentPos[1];
-  short newRow, newCol;
 
   if (((oldRow+rowVelocity) >= rowLimits[1]) || ((oldRow-rowVelocity) <= rowLimits[0]) || ((oldCol+colVelocity) >= colLimits[1]) || ((oldCol-colVelocity) <= colLimits[0]))
   {
@@ -128,16 +127,22 @@ void move_ball(char direction)
 }
 
 /*Gets called every time the CPU wakes up*/
+static int secCount = 0;
 void wdt_c_handler()
 {
-  char dir;
-  if (switches & SW1) dir = 'L';     // Move to the left
-  if (switches & SW2) dir = 'U';
-  if (switches & SW3) dir = 'D';
-  if (switches & SW4) dir = 'R';
-
-  move_ball(dir);
+  if (secCount++ >= 25)
+  {
+    secCount = 0;
   
-  redrawScreen = 1; 
+    char dir;
+    if (switches & SW1) dir = 'L';     // Move to the left
+    if (switches & SW2) dir = 'U';
+    if (switches & SW3) dir = 'D';
+    if (switches & SW4) dir = 'R';
+
+    move_ball(dir);
+  
+    redrawScreen = 1;
+  }
 
 }
