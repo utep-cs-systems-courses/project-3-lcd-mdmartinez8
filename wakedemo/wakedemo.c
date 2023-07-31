@@ -17,6 +17,9 @@
 char blue = 31, green = 0, red = 31;
 unsigned char step = 0;
 
+void switch_init();
+void update_game();
+
 static char 
 switch_update_interrupt_sense()
 {
@@ -50,7 +53,7 @@ switch_interrupt_handler()
 // axis zero for col, axis 1 for row
 
 short drawPos[2] = {1,10}, controlPos[2] = {2, 10};
-short colVelocity = 1, colLimits[2] = {1, screenWidth/2};
+short colVelocity = 2, colLimits[2] = {1, screenWidth};
 
 void
 draw_ball(int col, int row, unsigned short color)
@@ -67,7 +70,7 @@ screen_update_ball()
       goto redraw;
   return;			/* nothing to do */
  redraw:
-  draw_ball(drawPos[0], drawPos[1], COLOR_BLUE); /* erase */
+  draw_ball(drawPos[0], drawPos[1], COLOR_BLACK); /* erase */
   for (char axis = 0; axis < 2; axis ++) 
     drawPos[axis] = controlPos[axis];
   draw_ball(drawPos[0], drawPos[1], COLOR_WHITE); /* draw */
@@ -97,7 +100,7 @@ void wdt_c_handler()
       if (switches & SW3) green = (green + 1) % 64;
       if (switches & SW2) blue = (blue + 2) % 32;
       if (switches & SW1) red = (red - 3) % 32;
-      if (step <= 30)
+      if (step <= 50)
 	step ++;
       else
 	step = 0;
